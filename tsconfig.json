@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "typeRoots": [
+            "./tstypes"
+        ],
+        "declaration": true,
+        "declarationDir": "./tstypes",
+        "target": "ES2023",
+    },
+    "include": [
+        "src/**.ts"
+    ]
+}
