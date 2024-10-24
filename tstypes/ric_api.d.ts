@@ -52,6 +52,11 @@ declare const _RIC: {
      * @returns The input string, with text appended
      */
     testRustString: (s: string) => Promise<string>;
+    /**
+     * A fastcall example that prints something.
+     * @param s The input string to print
+     */
+    print: (s: string) => any;
     Element: typeof Element;
     Position: typeof Position;
 };

@@ -98,7 +98,12 @@ const _RIC = {
      * @param s The string to append to
      * @returns The input string, with text appended
      */
-    testRustString: async (s: string): Promise<string> => core.ops.op_test_rust_string(s), // Wrap for safety and to declare proper typing
+    testRustString: async (s: string): Promise<string> => core.ops.op_test_rust_string(s), // Wrap to declare proper typing
+    /**
+     * A fastcall example that prints something.
+     * @param s The input string to print
+     */
+    print: (s: string) => core.ops.op_print_string_fast(s),
     Element: Element,
     Position: Position,
 };

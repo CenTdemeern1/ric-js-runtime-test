@@ -14,6 +14,7 @@ console.error("Test3!")
 const rustString = await RIC.testRustString("JavaScript String...");
 //    ^?
 console.log(RIC.test(), RIC.legacyMacro("abc1234abc754212"), rustString);
+RIC.print("This string comes from JavaScript, but is being printed from Rust code in a fastcall.");
 
 const position = new RIC.Position(1, 2, 3, 4); // =>
 const element = new RIC.Element("baba", "tile", position);
@@ -30,3 +31,5 @@ assert(element.position.x === x);
 assert(element.getY() === y);
 
 console.log((await import("./test2.js")).default);
+
+// WebAssembly; // Should be undefined
