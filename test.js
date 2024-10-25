@@ -33,3 +33,5 @@ assert(element.getY() === y);
 console.log((await import("./test2.js")).default);
 
 // WebAssembly; // Should be undefined
+const a = [];
+while (1) a.push("test string");

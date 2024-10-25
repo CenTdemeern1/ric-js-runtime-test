@@ -1,11 +1,14 @@
-use std::{env::args, rc::Rc};
+use std::{env::args, rc::Rc, sync::OnceLock};
 
-use deno_core::{error::AnyError, v8::V8::set_flags_from_string};
+use deno_core::{error::AnyError, v8::{IsolateHandle, V8::set_flags_from_string}};
+use tokio::task::AbortHandle;
 
 mod ric_api;
 
+static ISOLATE: OnceLock<IsolateHandle> = OnceLock::new();
+
 async fn run_js(file_path: &str) -> Result<(), AnyError> {
-    set_flags_from_string("--noexpose-wasm --single-threaded");
+    set_flags_from_string("--noexpose-wasm --single-threaded --max-old-space-size=2"); // 2 is very low. A more reasonable value is usually in the thousands.
     let main_module = deno_core::resolve_path(file_path, &std::env::current_dir()?)?;
     let mut js_runtime = deno_core::JsRuntime::new(deno_core::RuntimeOptions {
         module_loader: Some(Rc::new(deno_core::FsModuleLoader)),
@@ -14,6 +17,16 @@ async fn run_js(file_path: &str) -> Result<(), AnyError> {
         ],
         ..Default::default()
     });
+    let isolate = js_runtime.v8_isolate();
+    ISOLATE.set(isolate.thread_safe_handle()).unwrap();
+    extern "C" fn oom_handler(location: *const i8, details: &deno_core::v8::OomDetails) {
+        println!("V8 is out of memory!");
+        println!("Terminating execution");
+        ISOLATE.get().unwrap().terminate_execution();
+        println!("Execution terminated");
+        std::process::abort()
+    }
+    isolate.set_oom_error_handler(oom_handler);
     let internal_mod_id = js_runtime
         .load_side_es_module_from_code(
             &deno_core::ModuleSpecifier::parse("ric:runtime.js")?,
@@ -32,7 +45,15 @@ async fn run_js(file_path: &str) -> Result<(), AnyError> {
 #[tokio::main]
 async fn main() {
     let file = args().skip(1).next().expect("Please specify a file to run");
-    if let Err(error) = run_js(&file).await {
-        eprintln!("Error: {}", error);
+    let localset = tokio::task::LocalSet::new();
+    let handle = localset.spawn_local(async move {
+        if let Err(error) = run_js(&file).await {
+            eprintln!("Error: {}", error);
+        }
+    });
+    localset.await;
+    match handle.await {
+        Ok(()) => println!("Cool! Everything went well"),
+        Err(err) => println!("Oh no! {err}"),
     }
 }
