@@ -21,6 +21,10 @@ class Position {
         [this.x, this.y, this.z, this.t] = [x, y, z, t];
     }
 
+    static fromArray(array: PositionLike): Position {
+        return new Position(...array);
+    }
+
     displace(...args: [Position] | PositionLike) {
         let other: PositionLike = args[0] instanceof Position ? args[0].toArray() : (args as PositionLike);
         this.x += other[0];
@@ -32,14 +36,53 @@ class Position {
     toArray(): PositionLike {
         return [this.x, this.y, this.z, this.t];
     }
+
+    toString(): string {
+        return `Position { x: ${this.x}, y: ${this.y}, z: ${this.z}, t: ${this.t} }`
+    }
 }
 
 type Argument = number | string | boolean | null;
 
-type Variant = {
+interface VariantLike {
     name: string;
-    arguments: Argument[];
+    args?: Argument[];
+}
+
+class Variant {
+    name: string;
+    args: Argument[];
+
+    constructor(
+        name: string,
+        ...args: Argument[]
+    ) {
+        [this.name, this.args] = [name, args];
+    }
+
+    static fromObject(object: VariantLike): Variant {
+        let { name, args } = object;
+        return new Variant(name, ...(args ?? []));
+    }
+
+    toString(): string {
+        return genArgumentFormat(
+            this.name,
+            this.args.map(i => `${i}`),
+            "/"
+        );
+    }
 };
+
+interface HasToString {
+    toString(): string;
+}
+
+function genArgumentFormat(firstItem: string, itemList: HasToString[], separator: string) {
+    const stringList = itemList.map(i => i.toString());
+    stringList.unshift(firstItem);
+    return stringList.join(separator);
+}
 
 type ElementKind = "tile" | "sign";
 
@@ -55,10 +98,36 @@ class Element {
     constructor(
         name: string,
         kind: ElementKind,
-        position: Position = new Position,
         variants: Variant[] = [],
+        position: Position = new Position,
     ) {
         [this.name, this.kind, this.position, this.variants] = [name, kind, position, variants];
+    }
+
+    static tile(name: string, variants?: Variant[], position?: Position): Element {
+        return new Element(
+            name,
+            "tile",
+            variants,
+            position
+        );
+    }
+
+    static sign(name: string, variants?: Variant[], position?: Position): Element {
+        return new Element(
+            name,
+            "sign",
+            variants,
+            position
+        );
+    }
+
+    static escapeSignText(text: string): string {
+        return text.replaceAll(/([& :;/\\<>$])/g, "\\$1");
+    }
+
+    makeSignTextString(): string {
+        return `{${Element.escapeSignText(this.name)}}`;
     }
 
     getX(): number {
@@ -75,6 +144,24 @@ class Element {
 
     getT(): number {
         return this.position.t;
+    }
+
+    displace(x?: number, y?: number, z?: number, t?: number) {
+        this.position.displace(x ?? 0, y ?? 0, z ?? 0, t ?? 0);
+    }
+
+    addVariant(variant: Variant | VariantLike) {
+        if (!(variant instanceof Variant))
+            variant = Variant.fromObject(variant)
+        this.variants.push(variant as Variant);
+    }
+
+    toString(): string {
+        return genArgumentFormat(
+            this.kind === "sign" ? this.makeSignTextString() : this.name,
+            this.variants.map(i => i.toString()),
+            ":"
+        );
     }
 }
 
@@ -106,6 +193,7 @@ const _RIC = {
     print: (s: string) => core.ops.op_print_string_fast(s),
     Element: Element,
     Position: Position,
+    Variant: Variant,
 };
 
 declare global {
