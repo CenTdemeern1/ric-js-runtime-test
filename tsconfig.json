@@ -6,6 +6,7 @@
         "declaration": true,
         "declarationDir": "./tstypes",
         "target": "ES2023",
+        "checkJs": true,
     },
     "include": [
         "src/**.ts"
