@@ -1,7 +1,23 @@
 declare var Deno: any;
 const { core } = Deno;
 
-type PositionLike = [number, number, number, number];
+const isRewrite: boolean = false;
+
+interface HasToString {
+    toString(): string;
+}
+
+function genArgumentFormat(firstItem: string, itemList: HasToString[], separator: string) {
+    const stringList = itemList.map(i => i.toString());
+    stringList.unshift(firstItem);
+    return stringList.join(separator);
+}
+
+type PositionLike = [number, number, number, number]
+                    | [number, number, number]
+                    | [number, number]
+                    | [number]
+                    | [];
 
 class Position {
     x: number;
@@ -25,12 +41,35 @@ class Position {
         return new Position(...array);
     }
 
+    /**
+     * Displace this position in-place.
+     * @param args Either a Position or at most 4 position numbers
+     */
     displace(...args: [Position] | PositionLike) {
         let other: PositionLike = args[0] instanceof Position ? args[0].toArray() : (args as PositionLike);
-        this.x += other[0];
-        this.y += other[1];
-        this.z += other[2];
-        this.t += other[3];
+        this.x += other[0] ?? 0;
+        this.y += other[1] ?? 0;
+        this.z += other[2] ?? 0;
+        this.t += other[3] ?? 0;
+    }
+
+    /**
+     * Return a displaced copy of this position.
+     * @param args Either a Position or at most 4 position numbers
+     */
+    toDisplaced(...args: [Position] | PositionLike): Position {
+        let other: PositionLike = args[0] instanceof Position ? args[0].toArray() : (args as PositionLike);
+        return new Position(
+            this.x + (other[0] ?? 0),
+            this.y + (other[1] ?? 0),
+            this.z + (other[2] ?? 0),
+            this.t + (other[3] ?? 0),
+        );
+    }
+
+    copy(): Position {
+        const { x, y, z, t } = this;
+        return new Position(x, y, z, t);
     }
 
     toArray(): PositionLike {
@@ -65,24 +104,27 @@ class Variant {
         return new Variant(name, ...(args ?? []));
     }
 
+    /**
+     * Shorthand to create a displace variant.
+     * @param args Either a Position or at most 4 position numbers
+     */
+    static displace(...args: [Position] | PositionLike) {
+        if (args[0] instanceof Position) {
+            const { x, y, z, t } = args[0];
+            return new Variant("displace", x, y, z, t);
+        }
+        return new Variant("displace", ...(args as PositionLike));
+    }
+
     toString(): string {
-        return genArgumentFormat(
+        const args = this.args.map(i => `${i}`);
+        return isRewrite ? genArgumentFormat(
             this.name,
-            this.args.map(i => `${i}`),
+            args,
             "/"
-        );
+        ) : `${this.name}${args.join("/")}`;
     }
 };
-
-interface HasToString {
-    toString(): string;
-}
-
-function genArgumentFormat(firstItem: string, itemList: HasToString[], separator: string) {
-    const stringList = itemList.map(i => i.toString());
-    stringList.unshift(firstItem);
-    return stringList.join(separator);
-}
 
 type ElementKind = "tile" | "text" | "glyph" | "node" | "sign";
 
@@ -118,13 +160,15 @@ class Element {
         variants: Variant[] = [],
         position: Position = new Position,
     ) {
-        [this.name, this.kind, this.position, this.variants] = [name, kind, position, variants];
+        [this.name, this.kind, this.position, this.variants] = [name, kind, position.copy(), variants];
     }
 
     static tile = generateElementKindFunction("tile");
     static sign = generateElementKindFunction("sign");
     static text = generateElementKindFunction("text");
     static rule = generateElementKindFunction("text", "rule");
+    static glyph = generateElementKindFunction("glyph"); // ???
+    static node = generateElementKindFunction("node"); // ???
 
     static escapeSignText(text: string): string {
         return text.replaceAll(/([& :;/\\<>$])/g, "\\$1");
@@ -150,8 +194,20 @@ class Element {
         return this.position.t;
     }
 
-    displace(x?: number, y?: number, z?: number, t?: number) {
-        this.position.displace(x ?? 0, y ?? 0, z ?? 0, t ?? 0);
+    /**
+     * Shorthand to add a displace variant to this Element.
+     * @param args Either a Position or at most 4 position numbers
+     */
+    displace(...args: [Position] | PositionLike) {
+        this.addVariant(Variant.displace(...args));
+    }
+
+    /**
+     * Shorthand to displace this Element's position.
+     * @param args Either a Position or at most 4 position numbers
+     */
+    displacePosition(...args: [Position] | PositionLike) {
+        this.position.displace(...args);
     }
 
     addVariant(variant: Variant | VariantLike) {
