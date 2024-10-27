@@ -19,6 +19,8 @@ type PositionLike = [number, number, number, number]
                     | [number]
                     | [];
 
+type PositionArgument = [Position] | PositionLike;
+
 class Position {
     x: number;
     y: number;
@@ -45,7 +47,7 @@ class Position {
      * Displace this position in-place.
      * @param args Either a Position or at most 4 position numbers
      */
-    displace(...args: [Position] | PositionLike) {
+    displace(...args: PositionArgument) {
         let other: PositionLike = args[0] instanceof Position ? args[0].toArray() : (args as PositionLike);
         this.x += other[0] ?? 0;
         this.y += other[1] ?? 0;
@@ -57,7 +59,7 @@ class Position {
      * Return a displaced copy of this position.
      * @param args Either a Position or at most 4 position numbers
      */
-    toDisplaced(...args: [Position] | PositionLike): Position {
+    toDisplaced(...args: PositionArgument): Position {
         let other: PositionLike = args[0] instanceof Position ? args[0].toArray() : (args as PositionLike);
         return new Position(
             this.x + (other[0] ?? 0),
@@ -108,7 +110,7 @@ class Variant {
      * Shorthand to create a displace variant.
      * @param args Either a Position or at most 4 position numbers
      */
-    static displace(...args: [Position] | PositionLike) {
+    static displace(...args: PositionArgument) {
         if (args[0] instanceof Position) {
             const { x, y, z, t } = args[0];
             return new Variant("displace", x, y, z, t);
@@ -198,7 +200,7 @@ class Element {
      * Shorthand to add a displace variant to this Element.
      * @param args Either a Position or at most 4 position numbers
      */
-    displace(...args: [Position] | PositionLike) {
+    displace(...args: PositionArgument) {
         this.addVariant(Variant.displace(...args));
     }
 
@@ -206,7 +208,7 @@ class Element {
      * Shorthand to displace this Element's position.
      * @param args Either a Position or at most 4 position numbers
      */
-    displacePosition(...args: [Position] | PositionLike) {
+    displacePosition(...args: PositionArgument) {
         this.position.displace(...args);
     }
 
