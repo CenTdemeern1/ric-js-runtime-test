@@ -34,7 +34,7 @@ class Position {
         z: number = 0,
         t: number = 0,
     ) {
-        [this.x, this.y, this.z, this.t] = [x, y, z, t];
+        Object.assign(this, { x, y, z, t });
     }
 
     static fromArray(array: PositionLike): Position {
@@ -100,7 +100,7 @@ class Variant {
         name: string,
         ...args: Argument[]
     ) {
-        [this.name, this.args] = [name, args];
+        Object.assign(this, { name, args });
     }
 
     /**
@@ -177,7 +177,12 @@ class Element {
         variants: Variant[] = [],
         position: Position = new Position,
     ) {
-        [this.name, this.kind, this.position, this.variants] = [name, kind, position.copy(), variants];
+        Object.assign(this, {
+            name,
+            kind,
+            position: position.copy(),
+            variants,
+        });
     }
 
     static tile = generateElementKindFunction("tile");
