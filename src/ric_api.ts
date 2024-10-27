@@ -84,7 +84,24 @@ function genArgumentFormat(firstItem: string, itemList: HasToString[], separator
     return stringList.join(separator);
 }
 
-type ElementKind = "tile" | "sign";
+type ElementKind = "tile" | "text" | "glyph" | "node" | "sign";
+
+function generateElementKindFunction(kind: ElementKind, alias?: string) {
+    const f = (
+        name: string,
+        variants?: Variant[],
+        position?: Position
+    ): Element => new Element(
+        name,
+        kind,
+        variants,
+        position
+    );
+    Object.defineProperty(f, "name", {
+        value: alias ?? kind,
+    });
+    return f;
+}
 
 class Element {
     position: Position;
@@ -104,23 +121,10 @@ class Element {
         [this.name, this.kind, this.position, this.variants] = [name, kind, position, variants];
     }
 
-    static tile(name: string, variants?: Variant[], position?: Position): Element {
-        return new Element(
-            name,
-            "tile",
-            variants,
-            position
-        );
-    }
-
-    static sign(name: string, variants?: Variant[], position?: Position): Element {
-        return new Element(
-            name,
-            "sign",
-            variants,
-            position
-        );
-    }
+    static tile = generateElementKindFunction("tile");
+    static sign = generateElementKindFunction("sign");
+    static text = generateElementKindFunction("text");
+    static rule = generateElementKindFunction("text", "rule");
 
     static escapeSignText(text: string): string {
         return text.replaceAll(/([& :;/\\<>$])/g, "\\$1");
