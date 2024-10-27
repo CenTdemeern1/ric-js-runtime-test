@@ -262,6 +262,10 @@ class Element {
         this.position.displace(...args);
     }
 
+    /**
+     * Adds a variant to this Element.
+     * @param variant The variant to add to this element
+     */
     addVariant(variant: Variant | VariantLike) {
         if (!(variant instanceof Variant))
             variant = Variant.fromObject(variant)
