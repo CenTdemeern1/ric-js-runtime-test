@@ -7,6 +7,7 @@
         "declarationDir": "./tstypes",
         "target": "ES2023",
         "checkJs": true,
+        "strictNullChecks": true,
     },
     "include": [
         "src/**.ts"
