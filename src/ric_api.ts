@@ -69,6 +69,10 @@ class Position {
         );
     }
 
+    /**
+     * Creates a copy of this position
+     * @returns A copy of this position
+     */
     copy(): Position {
         const { x, y, z, t } = this;
         return new Position(x, y, z, t);
@@ -116,6 +120,14 @@ class Variant {
             return new Variant("displace", x, y, z, t);
         }
         return new Variant("displace", ...(args as PositionLike));
+    }
+
+    /**
+     * Creates a copy of this Variant and its arguments array.
+     * @returns A copy of this Variant
+     */
+    copy(): Variant {
+        return new Variant(this.name, ...this.args);
     }
 
     toString(): string {
@@ -216,6 +228,19 @@ class Element {
         if (!(variant instanceof Variant))
             variant = Variant.fromObject(variant)
         this.variants.push(variant as Variant);
+    }
+
+    /**
+     * Creates a copy of this Element and its Position and Variants.
+     * @returns A copy of this Element
+     */
+    copy(): Element {
+        return new Element(
+            this.name,
+            this.kind,
+            this.variants.map(v => v.copy()),
+            this.position.copy()
+        );
     }
 
     toString(): string {
