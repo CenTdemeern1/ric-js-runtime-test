@@ -1,8 +1,6 @@
 declare var Deno: any;
 const { core } = Deno;
 
-const isRewrite: boolean = false;
-
 interface HasToString {
     toString(): string;
 }
@@ -138,11 +136,11 @@ class Variant {
 
     toString(): string {
         const args = this.args.map(i => `${i}`);
-        return isRewrite ? genArgumentFormat(
+        return genArgumentFormat(
             this.name,
             args,
             "/"
-        ) : `${this.name}${args.join("/")}`;
+        );
     }
 };
 
