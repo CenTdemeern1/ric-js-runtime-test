@@ -254,27 +254,33 @@ class Element {
     /**
      * Shorthand to add a displace variant to this Element.
      * @param args Either a Position or at most 4 position numbers
+     * @returns This element. Useful for chaining methods.
      */
-    displace(...args: PositionArgument) {
+    displace(...args: PositionArgument): Element {
         this.addVariant(Variant.displace(...args));
+        return this;
     }
 
     /**
      * Shorthand to displace this Element's position.
      * @param args Either a Position or at most 4 position numbers
+     * @returns This element. Useful for chaining methods.
      */
-    displacePosition(...args: PositionArgument) {
+    displacePosition(...args: PositionArgument): Element {
         this.position.displace(...args);
+        return this;
     }
 
     /**
      * Adds a variant to this Element.
      * @param variant The variant to add to this element
+     * @returns This element. Useful for chaining methods.
      */
-    addVariant(variant: Variant | VariantLike) {
+    addVariant(variant: Variant | VariantLike): Element {
         if (!(variant instanceof Variant))
             variant = Variant.fromObject(variant)
         this.variants.push(variant as Variant);
+        return this;
     }
 
     /**
