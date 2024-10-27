@@ -113,8 +113,9 @@ class Variant {
     /**
      * Shorthand to create a displace variant.
      * @param args Either a Position or at most 4 position numbers
+     * @returns A displace variant.
      */
-    static displace(...args: PositionArgument) {
+    static displace(...args: PositionArgument): Variant {
         if (args[0] instanceof Position) {
             const { x, y, z, t } = args[0];
             return new Variant("displace", x, y, z, t);
