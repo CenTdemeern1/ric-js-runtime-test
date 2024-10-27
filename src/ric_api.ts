@@ -148,8 +148,7 @@ function generateElementKindFunction(kind: ElementKind, alias?: string) {
         variants?: Variant[],
         position?: Position
     ): Element => new Element(
-        name,
-        kind,
+        ...Element.parseFormattedName(name, kind),
         variants,
         position
     );
@@ -188,8 +187,46 @@ class Element {
         return text.replaceAll(/([& :;/\\<>$])/g, "\\$1");
     }
 
+    static parseFormattedName(name: string, kind: ElementKind): [string, ElementKind] {
+        if (kind === "text" && name.startsWith("tile_")) {
+            name = name.substring(5);
+            kind = "tile";
+        }
+        // It might seem weird to not make this an else if, but this matches the current behavior of the bot
+        if (kind === "tile" && name.startsWith("text_")) {
+            name = name.substring(5);
+            kind = "text";
+        }
+        if (kind === "tile") {
+            if (name.startsWith("glyph_")) {
+                name = name.substring(6);
+                kind = "glyph";
+            } else if (name.startsWith("node_")) {
+                name = name.substring(5);
+                kind = "node";
+            }
+        }
+        return [name, kind];
+    }
+
     makeSignTextString(): string {
         return `{${Element.escapeSignText(this.name)}}`;
+    }
+
+    formatName(): string {
+        switch (this.kind) {
+            case "sign":
+                return this.makeSignTextString();
+            
+            case "glyph":
+            case "node":
+                return `tile_${this.kind}_${this.name}`;
+            
+            case "tile":
+            case "text":
+            default:
+                return `${this.kind}_${this.name}`;
+        }
     }
 
     getX(): number {
@@ -245,7 +282,7 @@ class Element {
 
     toString(): string {
         return genArgumentFormat(
-            this.kind === "sign" ? this.makeSignTextString() : this.name,
+            this.formatName(),
             this.variants.map(i => i.toString()),
             ":"
         );
