@@ -215,14 +215,10 @@ class Element {
         return [name, kind];
     }
 
-    makeSignTextString(): string {
-        return `{${Element.escapeSignText(this.name)}}`;
-    }
-
     formatName(): string {
         switch (this.kind) {
             case "sign":
-                return this.makeSignTextString();
+                return `{${Element.escapeSignText(this.name)}}`;
             
             case "glyph":
             case "node":
