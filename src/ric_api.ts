@@ -105,6 +105,11 @@ class Variant {
         [this.name, this.args] = [name, args];
     }
 
+    /**
+     * Creates a Variant from a VariantLike object
+     * @param object A VariantLike object
+     * @returns A Variant
+     */
     static fromObject(object: VariantLike): Variant {
         let { name, args } = object;
         return new Variant(name, ...(args ?? []));
