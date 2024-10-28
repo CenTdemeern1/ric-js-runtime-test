@@ -1,6 +1,6 @@
 {
   "name": "robot-is-chill-ts",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Robot Is Chill's TypeScript API",
   "main": "ric_api.js",
   "types": "ric_api.d.ts",
