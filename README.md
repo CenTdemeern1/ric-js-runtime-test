@@ -1,9 +1,10 @@
-# Robot Is Chill JavaScript runtime test
+# Robot Is Chill JavaScript runtime
+This is the repository for the upcoming JavaScript runtime for Robot Is Chill, based on [deno_core](https://github.com/denoland/deno_core).
 
 How to try this out
 ---
 ### In your web browser:
-1. [Open this repository in Gitpod.](https://gitpod.io/#https://github.com/CenTdemeern1/ric-js-runtime-test) This repository has a Gitpod config so everything will be set up for you automatically.
+1. [Open this repository in Gitpod.](https://gitpod.io/#https://github.com/ROBOT-IS-CHILL/ric-js-runtime) This repository has a Gitpod config so everything will be set up for you automatically.
 2. Open `test.js` and you're ready to go!
 ### Locally:
 1. [Install Deno](https://docs.deno.com/runtime/#install-deno).
