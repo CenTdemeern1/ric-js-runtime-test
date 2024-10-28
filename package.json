@@ -1,0 +1,27 @@
+{
+  "name": "robot-is-chill-ts",
+  "version": "0.0.1",
+  "description": "Robot Is Chill's TypeScript API",
+  "main": "src/ric_api.js",
+  "types": "tstypes/ric_api.d.ts",
+  "scripts": {
+    "build": "cargo build",
+    "build-ts": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ROBOT-IS-CHILL/ric-js-runtime.git"
+  },
+  "keywords": [
+    "robot-is-chill"
+  ],
+  "author": "CenTdemeern1",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ROBOT-IS-CHILL/ric-js-runtime/issues"
+  },
+  "homepage": "https://github.com/ROBOT-IS-CHILL/ric-js-runtime#readme",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
