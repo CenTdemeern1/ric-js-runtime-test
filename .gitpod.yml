@@ -1,4 +1,4 @@
 tasks:
   - before: curl -fsSL https://deno.land/install.sh | sh -s -- -y; . "/home/gitpod/.deno/env"
-    init: cargo build
+    init: deno install && cargo build
     command: cargo watch -i "src/**.js" -i "tstypes/**.d.ts" -x "run -- test.js"

@@ -10,8 +10,9 @@ How to try this out
 1. [Install Deno](https://docs.deno.com/runtime/#install-deno).
 2. Install Cargo + Rust via [Rustup](https://rustup.rs/).
 3. Clone this repository via Git.
-4. Open `test.js` in your editor of choice.
-5. Use something like `cargo run -- test.js` to compile the runtime and use it to run `test.js`.
+4. Run `deno install` in this repository's root directory
+5. Open `test.js` in your editor of choice.
+6. Use something like `cargo run -- test.js` to compile the runtime and use it to run `test.js`.
 
 VSCode Troubleshooting
 ---
