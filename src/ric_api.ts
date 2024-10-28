@@ -85,7 +85,22 @@ class Position {
     }
 }
 
-type Argument = number | string | boolean | null;
+type Argument = number | string | boolean | null | undefined;
+
+type Axis = "x" | "y";
+type BlendingMode = 'normal' | 'add' | 'subtract' | 'sub' | 'multiply' | 'divide' | 'max' | 'min' | 'screen' | 'softlight' | 'hardlight' | 'overlay' | 'mask' | 'dodge' | 'burn' | 'cut';
+type Side = 'left' | 'top' | 'right' | 'bottom';
+
+function generateVariantShorthandFunction<T extends Array<Argument>>(name: string) {
+    const f = (...args: T): Variant => new Variant(
+        name,
+        ...(args as Argument[])
+    );
+    Object.defineProperty(f, "name", {
+        value: name,
+    });
+    return f;
+}
 
 interface VariantLike {
     name: string;
@@ -125,6 +140,27 @@ class Variant {
         }
         return new Variant("displace", ...(args as PositionLike));
     }
+
+    /** A shorthand to create an aberrate variant. */
+    static aberrate = generateVariantShorthandFunction<[number, number]>("aberrate");
+    /** A shorthand to create an align variant. */
+    static align = generateVariantShorthandFunction<["left" | "center" | "right"]>("align!");
+    /** A shorthand to create a blend variant. */
+    static blend = generateVariantShorthandFunction<[BlendingMode, boolean]>("blend");
+    /** A shorthand to create a filterimage variant. */
+    static filterimage = generateVariantShorthandFunction<[string, boolean | undefined]>("filterimage");
+    /** A shorthand to create a fisheye variant. */
+    static fisheye = generateVariantShorthandFunction<[number]>("fisheye");
+    /** A shorthand to create a flip variant. */
+    static flip = generateVariantShorthandFunction<Axis[]>("flip");
+    /** A shorthand to create a frames variant. */
+    static frames = generateVariantShorthandFunction<[number] | [number, number, number]>("frames");
+    /** A shorthand to create a liquify variant. */
+    static liquify = generateVariantShorthandFunction<[]>("liquify");
+    /** A shorthand to create a melt variant. */
+    static melt = generateVariantShorthandFunction<[Side]>("melt");
+    /** A shorthand to create a planet variant. */
+    static planet = generateVariantShorthandFunction<[]>("planet");
 
     /**
      * Creates a copy of this Variant and its arguments array.
