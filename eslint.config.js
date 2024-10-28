@@ -1,6 +1,6 @@
 export default [
     {
-        files: ["**.ts", "**.js"],
+        files: ["**.ts"],
         rules: {
             "strict": "error", // Doesnt't matter because modules but still
             "no-var": "error",

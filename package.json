@@ -6,7 +6,9 @@
   "types": "ric_api.d.ts",
   "scripts": {
     "build": "cargo build",
-    "build-ts": "npx tsc && cp */ric_api.* ."
+    "build-ts": "npx tsc && cp src/ric_api.js src/ric_api.ts src/ric_api.d.js .",
+    "watch-try": "cargo watch -i \"**.js\" -i \"tstypes/**.d.ts\" -s \"deno run try\"",
+    "try": "deno run -A npm:typescript/tsc && cargo run -- try_it_out.js"
   },
   "repository": {
     "type": "git",

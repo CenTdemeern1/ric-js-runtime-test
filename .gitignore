@@ -1,4 +1,4 @@
 node_modules
 /target
-src/**.js
-tstypes/**.d.ts
+**.js
+**.d.ts
