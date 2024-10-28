@@ -2,11 +2,11 @@
   "name": "robot-is-chill-ts",
   "version": "0.0.3",
   "description": "Robot Is Chill's TypeScript API",
-  "main": "src/ric_api.js",
-  "types": "tstypes/ric_api.d.ts",
+  "main": "ric_api.js",
+  "types": "ric_api.d.ts",
   "scripts": {
     "build": "cargo build",
-    "build-ts": "npx tsc"
+    "build-ts": "npx tsc && cp */ric_api.* ."
   },
   "repository": {
     "type": "git",
@@ -25,8 +25,8 @@
     "typescript": "^5.6.3"
   },
   "files": [
-    "src/ric_api.js",
-    "src/ric_api.ts",
-    "tstypes/ric_api.d.ts"
+    "ric_api.js",
+    "ric_api.ts",
+    "ric_api.d.ts"
   ]
 }
