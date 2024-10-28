@@ -217,7 +217,7 @@ class Element {
             name,
             kind,
             position: position.copy(),
-            variants,
+            variants: [...variants],
         });
     }
 
