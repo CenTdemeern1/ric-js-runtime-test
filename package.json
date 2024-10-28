@@ -23,5 +23,10 @@
   "homepage": "https://github.com/ROBOT-IS-CHILL/ric-js-runtime#readme",
   "devDependencies": {
     "typescript": "^5.6.3"
-  }
+  },
+  "files": [
+    "src/ric_api.js",
+    "src/ric_api.ts",
+    "tstypes/ric_api.d.ts"
+  ]
 }
