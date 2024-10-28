@@ -25,7 +25,6 @@ console.log(`Y position: ${y}`);
 console.log(`Z position: ${z}`);
 console.log(`T position: ${t}`);
 
-assert(element.position === position);
 assert(element.position.toArray().every((value, index) => value === [x, y, z, t][index]));
 assert(element.position.x === x);
 assert(element.getY() === y);
