@@ -85,7 +85,7 @@ class Position {
     }
 }
 
-type Argument = number | string | boolean | null | undefined;
+type Argument = number | string | boolean | undefined;
 
 type Axis = "x" | "y";
 type BlendingMode = 'normal' | 'add' | 'subtract' | 'sub' | 'multiply' | 'divide' | 'max' | 'min' | 'screen' | 'softlight' | 'hardlight' | 'overlay' | 'mask' | 'dodge' | 'burn' | 'cut';
