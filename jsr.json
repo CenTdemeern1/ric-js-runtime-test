@@ -1,0 +1,10 @@
+{
+    "name": "@robot-is-chill/robot-is-chill-ts",
+    "version": "0.0.7",
+    "exports": "./ric_api.ts",
+    "include": [
+        "ric_api.js",
+        "ric_api.ts",
+        "ric_api.d.ts"
+    ]
+}
